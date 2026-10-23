@@ -124,3 +124,19 @@ func BenchmarkPercentiles(b *testing.B) {
 		Percentiles(rs, ps)
 	}
 }
+
+func TestStatusSummary(t *testing.T) {
+	got := StatusSummary(Results(10))
+	want := "200 6\n404 2\n500 2\n"
+	if got != want {
+		t.Fatalf("StatusSummary = %q, want %q", got, want)
+	}
+}
+
+func BenchmarkStatusSummary(b *testing.B) {
+	rs := Results(10000)
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		_ = StatusSummary(rs)
+	}
+}

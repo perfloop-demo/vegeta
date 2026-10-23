@@ -99,3 +99,24 @@ func Percentiles(rs []vegeta.Result, ps []float64) []time.Duration {
 	}
 	return out
 }
+
+// StatusSummary returns one line per status code, in ascending code order,
+// with the number of results that had that code. It keys counts by the
+// formatted code and sorts the keys as text, so codes of equal width sort
+// numerically.
+func StatusSummary(rs []vegeta.Result) string {
+	counts := map[string]int{}
+	for _, r := range rs {
+		counts[fmt.Sprintf("%d", r.Code)]++
+	}
+	keys := make([]string, 0, len(counts))
+	for k := range counts {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	out := ""
+	for _, k := range keys {
+		out += fmt.Sprintf("%s %d\n", k, counts[k])
+	}
+	return out
+}
